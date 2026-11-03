@@ -74,8 +74,8 @@
                                &kp LCTRL &kp LALT  &mo NAV   &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp PSCRN
             >;
 
-            // Left: volume. Right: niri workspace down/up.
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp LG(PG_DN) LG(PG_UP)>;
+            // Left: volume. Right: Page Down/Up (hold Super for niri workspace down/up).
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_DN PG_UP>;
         };
 
         nav_layer {
@@ -114,7 +114,7 @@
                       &trans     &trans     &trans     &trans     &trans    &trans   &trans     &trans     &trans     &trans
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp LG(PG_DN) LG(PG_UP)>;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_DN PG_UP>;
         };
 
         adjust_layer {
