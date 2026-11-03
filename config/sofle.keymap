@@ -22,12 +22,12 @@
 / {
     behaviors {
         // Caps position: tap = Esc (helix normal mode), hold = Ctrl.
-        // balanced: only becomes Ctrl once another key is pressed AND released
-        // while held, so "Esc then j" typed fast stays Esc + j.
+        // hold-preferred: any key pressed while held makes it Ctrl at once, so
+        // fast rolled Ctrl+C / Ctrl+V work even if Caps is released first.
         ctl_esc: ctl_esc {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            flavor = "balanced";
+            flavor = "hold-preferred";
             tapping-term-ms = <200>;
             bindings = <&kp>, <&kp>;
         };
