@@ -63,15 +63,16 @@
             // |   TAB    |  Q  |  W  |  E  |  R  |  T  |                 |  Y  |  U  |  I  |  O  |  P  |   =   |
             // | CTRL/ESC |  A  |  S  |  D  |  F  |  G  |                 |  H  |  J  |  K  |  L  |  ;  |   '   |
             // |  SHIFT   |  Z  |  X  |  C  |  V  |  B  | MUTE |  | OVRV |  N  |  M  |  ,  |  .  |  /  | SHIFT |
-            //                  | CTRL| ALT | NAV |SUPER|SPACE |  |ENT/SYM| BSPC| DEL |VI/EN| PSCR|
+            //                  | CTRL| ALT | NAV |SUPER|SPACE |  |ENT/SYM| BSPC| DEL |VI/EN| SHOT|
             // OVRV = Super+O (niri overview). VI/EN = Ctrl+Space (fcitx5 toggle).
+            // SHOT = Ctrl+Shift+1 (niri region screenshot).
 
             bindings = <
 &kp GRAVE           &kp N1     &kp N2    &kp N3    &kp N4    &kp N5                                      &kp N6     &kp N7     &kp N8     &kp N9    &kp N0    &kp MINUS
 &kp TAB             &kp Q      &kp W     &kp E     &kp R     &kp T                                       &kp Y      &kp U      &kp I      &kp O     &kp P     &kp EQUAL
 &ctl_esc LCTRL ESC  &kp A      &kp S     &kp D     &kp F     &kp G                                       &kp H      &kp J      &kp K      &kp L     &kp SEMI  &kp SQT
 &kp LSHFT           &kp Z      &kp X     &kp C     &kp V     &kp B     &kp C_MUTE    &kp LG(O)           &kp N      &kp M      &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
-                               &kp LCTRL &kp LALT  &mo NAV   &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp PSCRN
+                               &kp LCTRL &kp LALT  &mo NAV   &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp LC(LS(N1))
             >;
 
             // Left: volume. Right: niri workspace down/up.
