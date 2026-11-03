@@ -12,6 +12,7 @@
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
 #define BASE 0
@@ -21,6 +22,14 @@
 
 / {
     behaviors {
+        // Right encoder as a mouse wheel: each detent scrolls a short burst.
+        scroll_enc: scroll_enc {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+            tap-ms = <30>;
+        };
+
         // Caps position: tap = Esc (helix normal mode), hold = Ctrl.
         // hold-preferred: any key pressed while held makes it Ctrl at once, so
         // fast rolled Ctrl+C / Ctrl+V work even if Caps is released first.
@@ -74,8 +83,8 @@
                                &kp LCTRL &kp LALT  &mo NAV   &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp PSCRN
             >;
 
-            // Left: volume. Right: Page Down/Up (hold Super for niri workspace down/up).
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_DN PG_UP>;
+            // Left: volume. Right: mouse wheel (Super+wheel = niri workspace).
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &scroll_enc>;
         };
 
         nav_layer {
@@ -114,7 +123,7 @@
                       &trans     &trans     &trans     &trans     &trans    &trans   &trans     &trans     &trans     &trans
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &scroll_enc>;
         };
 
         adjust_layer {
