@@ -59,7 +59,7 @@ layers:
   - {t: ENTER, h: Sym}
   - BSPC
   - DEL
-  - RALT
+  - Ctl+SPACE
   - PSCRN
   Nav:
   - F1
