@@ -60,7 +60,7 @@ layers:
   - BSPC
   - DEL
   - Ctl+SPACE
-  - PSCRN
+  - Ctl+Sft+1
   Nav:
   - F1
   - F2
