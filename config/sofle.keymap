@@ -22,13 +22,13 @@
 
 / {
     behaviors {
-        // Right encoder as a mouse wheel, one wheel notch per detent.
-        // &msc reports speed * 16ms / 1000 per tick, so 70 gives one notch per
-        // tick; holding for 20ms fires exactly one tick (SCRL_* = 10 rounds to 0).
+        // Right encoder as a mouse wheel, three wheel notches per detent.
+        // &msc reports speed * 16ms / 1000 per tick (SCRL_* = 10 rounds to 0);
+        // holding for 20ms fires exactly one tick, so 200 -> 3 notches.
         scroll_enc: scroll_enc {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
-            bindings = <&msc MOVE_Y(-70)>, <&msc MOVE_Y(70)>;
+            bindings = <&msc MOVE_Y(-200)>, <&msc MOVE_Y(200)>;
             tap-ms = <20>;
         };
 
