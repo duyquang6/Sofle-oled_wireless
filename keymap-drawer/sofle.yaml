@@ -53,7 +53,7 @@ layers:
   - RSHFT
   - LCTRL
   - LALT
-  - Nav
+  - {t: Nav, h: Nav}
   - LGUI
   - SPACE
   - {t: ENTER, h: Sym}
