@@ -43,6 +43,15 @@
             bindings = <&kp>, <&kp>;
         };
 
+        // NAV thumb: hold = NAV while held, tap = lock/unlock NAV.
+        nav_lock: nav_lock {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&tog>;
+        };
+
         // Right inner thumb: tap = Enter, hold = SYM layer.
         ent_sym: ent_sym {
             compatible = "zmk,behavior-hold-tap";
@@ -82,7 +91,7 @@
 &kp TAB             &kp Q      &kp W     &kp E     &kp R     &kp T                                       &kp Y      &kp U      &kp I      &kp O     &kp P     &kp EQUAL
 &ctl_esc LCTRL ESC  &kp A      &kp S     &kp D     &kp F     &kp G                                       &kp H      &kp J      &kp K      &kp L     &kp SEMI  &kp SQT
 &kp LSHFT           &kp Z      &kp X     &kp C     &kp V     &kp B     &kp C_MUTE    &kp LG(O)           &kp N      &kp M      &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
-                               &kp LCTRL &kp LALT  &mo NAV   &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp PSCRN
+                               &kp LCTRL &kp LALT  &nav_lock NAV NAV  &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp PSCRN
             >;
 
             // Left: volume. Right: mouse wheel (Super+wheel = niri workspace).
