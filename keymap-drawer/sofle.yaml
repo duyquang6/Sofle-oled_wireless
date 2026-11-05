@@ -75,11 +75,11 @@ layers:
   - F11
   - F12
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - HOME
+  - PG UP
+  - UP
+  - PG DN
+  - END
   - HOME
   - PG DN
   - PG UP
@@ -87,10 +87,10 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - LGUI
   - LALT
-  - LCTRL
-  - LSHFT
+  - LEFT
+  - DOWN
+  - RIGHT
   - {t: ▽, type: trans}
   - LEFT
   - DOWN
