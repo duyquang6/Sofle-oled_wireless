@@ -1,0 +1,12 @@
+[Unit]
+Description=Sofle OLED data feed (time, EN/VI, Genshin)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/python3 -I %h/code/Sofle-oled_wireless/oled/kbdisplay.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
