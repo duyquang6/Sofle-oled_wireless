@@ -11,28 +11,6 @@ index 51f2856..fd3187e 100644
  };
  ZMK_EVENT_DECLARE(spotify_notification);
  #endif
-diff --git a/boards/shields/nice_oled/widgets/screen.c b/boards/shields/nice_oled/widgets/screen.c
-index 988e624..2309326 100644
---- a/boards/shields/nice_oled/widgets/screen.c
-+++ b/boards/shields/nice_oled/widgets/screen.c
-@@ -107,7 +107,7 @@ static void draw_battery_text(lv_obj_t *canvas, const struct status_state *state
- #elif IS_ENABLED(CONFIG_NICE_OLED_WIDGET_CENTRAL_SHOW_BATTERY_PERIPHERAL_AND_CENTRAL)
-     // MODO 3: Muestra la batería central y la del PRIMER periférico
-     if (CONFIG_NICE_OLED_SPLIT_TOTAL_DEVICES >= 2) {
--        snprintf(text, sizeof(text), "%d  %d", state->batteries[0].level,
-+        snprintf(text, sizeof(text), "L%d\nR%d", state->batteries[0].level,
-                  state->batteries[1].level);
-     } else {
-         // Si no hay periférico, muestra solo la central
-@@ -116,7 +116,7 @@ static void draw_battery_text(lv_obj_t *canvas, const struct status_state *state
- #endif
- 
-     // Dibuja la cadena de texto final en la pantalla
--    lv_canvas_draw_text(canvas, 0, 19, lv_obj_get_width(canvas), &label_dsc, text);
-+    lv_canvas_draw_text(canvas, 0, CONFIG_NICE_OLED_WIDGET_BATTERY_CUSTOM_Y, lv_obj_get_width(canvas), &label_dsc, text);
- }
- /*
- static void draw_battery_text(lv_obj_t *canvas, const struct status_state *state) {
 diff --git a/boards/shields/nice_oled/widgets/util.h b/boards/shields/nice_oled/widgets/util.h
 index 9a5e12d..e569225 100644
 --- a/boards/shields/nice_oled/widgets/util.h
