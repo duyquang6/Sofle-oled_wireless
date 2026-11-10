@@ -105,13 +105,13 @@
             // |      | HOME | PGUP |  ^   | PGDN | END  |               | HOME | PGDN | PGUP | END  |      |      |
             // |(CTRL)| ALT  |  <-  |  v   |  ->  |      |               |  <-  |  v   |  ^   |  ->  |      |      |
             // Left ESDF arrows for one-hand use with NAV locked; Ctrl/Shift come from the base outer column.
-            // |      | UNDO | CUT  | COPY | PASTE| CAPS | PAGE |  |     | PREV | PLAY | NEXT |      |      |      |
+            // |      | UNDO | CUT  | COPY | PASTE| CAPS |      |  |     | PREV | PLAY | NEXT |      |      |      |
 
             bindings = <
 &kp F1    &kp F2     &kp F3     &kp F4     &kp F5     &kp F6                         &kp F7      &kp F8     &kp F9      &kp F10    &kp F11  &kp F12
 &trans    &kp HOME   &kp PG_UP  &kp UP     &kp PG_DN  &kp END                        &kp HOME    &kp PG_DN  &kp PG_UP   &kp END    &trans   &trans
 &trans    &kp LALT   &kp LEFT   &kp DOWN   &kp RIGHT  &trans                         &kp LEFT    &kp DOWN   &kp UP      &kp RIGHT  &trans   &trans
-&trans    &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V)  &kp CAPS   &kp F13   &trans    &kp C_PREV  &kp C_PP   &kp C_NEXT  &trans     &trans   &trans
+&trans    &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V)  &kp CAPS   &trans    &trans    &kp C_PREV  &kp C_PP   &kp C_NEXT  &trans     &trans   &trans
                      &trans     &trans     &trans     &trans     &trans    &trans    &trans      &trans     &trans      &trans
             >;
 

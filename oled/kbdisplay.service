@@ -1,5 +1,5 @@
 [Unit]
-Description=Sofle OLED data feed (time, EN/VI, Genshin)
+Description=Sofle OLED input-method flag (fcitx5 EN/VI)
 After=graphical-session.target
 PartOf=graphical-session.target
 
