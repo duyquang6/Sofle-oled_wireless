@@ -3,14 +3,16 @@
 
 - time (hour, minute), refreshed every 30 s so the keyboard keeps the HID area on
 - EN/VI from fcitx5 (layout index into CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT_LIST="EN,VI")
-- one text slot (5 chars fit the 32 px column) cycling Genshin pages from genshin-redeem /api/status
-SIGUSR1 jumps to the next page (niri binds F13, sent by NAV + left encoder press).
+- Genshin lines from genshin-redeem /api/status in the text slot (23 chars, patched module;
+  the 32 px column wraps at spaces, so up to 4 lines of 5 chars are shown at once)
+SIGUSR1 shifts the window by one line when there are more than 4 (niri binds F13, NAV + left encoder press).
 Stdlib only; writes to every Sofle hidraw node with the 0xFF60 usage page (USB and BT).
 """
 import glob, json, math, os, signal, subprocess, time, urllib.request
 
 STATUS_URL = os.environ.get("KBD_STATUS_URL", "http://192.168.1.203:8788/api/status")
-PAGE_SECONDS = 6
+PAGE_SECONDS = 20  # resend so resin counts up
+LINES = 4
 STATUS_EVERY = 300
 RESIN_EVERY = 8 * 60
 
@@ -107,11 +109,11 @@ def main():
             send([T_TIME, lt.tm_hour, lt.tm_min])
             last_time, last_min = now, lt.tm_min
         if State.jump or now - last_page > PAGE_SECONDS:
-            if not State.jump:
-                State.page += 1
             State.jump = False
             ps = pages(status, int(now))
-            text = ps[State.page % len(ps)].encode("ascii", "replace")[:10]
+            off = State.page % len(ps) if len(ps) > LINES else 0
+            shown = (ps[off:] + ps[:off])[:LINES]
+            text = " ".join(shown).encode("ascii", "replace")[:23]
             send([T_TEXT, *text])
             last_page = now
         time.sleep(0.3)

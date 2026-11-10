@@ -1,0 +1,26 @@
+diff --git a/boards/shields/nice_oled/include/raw_hid/hid.h b/boards/shields/nice_oled/include/raw_hid/hid.h
+index 51f2856..fd3187e 100644
+--- a/boards/shields/nice_oled/include/raw_hid/hid.h
++++ b/boards/shields/nice_oled/include/raw_hid/hid.h
+@@ -30,7 +30,7 @@ ZMK_EVENT_DECLARE(weather_notification);
+ 
+ #ifdef CONFIG_NICE_OLED_WIDGET_RAW_HID_MEDIA_PLAYER_SPOTIFY_MACOS
+ struct spotify_notification {
+-    char media_player[11];
++    char media_player[24];
+ };
+ ZMK_EVENT_DECLARE(spotify_notification);
+ #endif
+diff --git a/boards/shields/nice_oled/widgets/util.h b/boards/shields/nice_oled/widgets/util.h
+index 9a5e12d..e569225 100644
+--- a/boards/shields/nice_oled/widgets/util.h
++++ b/boards/shields/nice_oled/widgets/util.h
+@@ -50,7 +50,7 @@ struct status_state {
+     uint8_t layout;
+     int8_t temperature;
+ #if IS_ENABLED(CONFIG_NICE_OLED_WIDGET_RAW_HID_MEDIA_PLAYER_SPOTIFY_MACOS)
+-    char media_player[11];
++    char media_player[24];
+ #endif
+ #endif
+ #if IS_ENABLED(CONFIG_NICE_OLED_WIDGET_MODIFIERS_INDICATORS_FIXED)
