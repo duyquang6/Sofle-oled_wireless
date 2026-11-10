@@ -11,43 +11,29 @@ index a7ad6a2..e402d83 100644
      if(CONFIG_NICE_OLED_WIDGET_CENTRAL_SHOW_BATTERY_PERIPHERAL_ALL OR CONFIG_NICE_OLED_WIDGET_CENTRAL_SHOW_BATTERY_PERIPHERAL_ONLY OR CONFIG_NICE_OLED_WIDGET_CENTRAL_SHOW_BATTERY_PERIPHERAL_AND_CENTRAL)
        # TODO
 diff --git a/boards/shields/nice_oled/widgets/screen.c b/boards/shields/nice_oled/widgets/screen.c
-index 988e624..f829d17 100644
+index 988e624..80fa9b5 100644
 --- a/boards/shields/nice_oled/widgets/screen.c
 +++ b/boards/shields/nice_oled/widgets/screen.c
-@@ -11,6 +11,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+@@ -11,6 +11,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
  #include <zmk/events/battery_state_changed.h>
  #include <zmk/events/ble_active_profile_changed.h>
  #include <zmk/events/endpoint_changed.h>
 +
-+// Sofle: input-method flags and logo (oled/icons.c)
++// Sofle: Vietnam flag decoration (oled/icons.c)
 +#include <lvgl.h>
 +LV_IMG_DECLARE(flag_vn);
-+LV_IMG_DECLARE(flag_en);
  #include <zmk/events/layer_state_changed.h>
  #include <zmk/events/usb_conn_state_changed.h>
  #include <zmk/events/wpm_state_changed.h>
-@@ -647,9 +652,12 @@ static void draw_hid_status(lv_obj_t *canvas, const struct status_state *state)
- #else
-         snprintf(layout_str, sizeof(layout_str), "L%i", state->layout);
+@@ -879,6 +883,11 @@ static void draw_canvas(lv_obj_t *widget, lv_color_t cbuf[], const struct status
+ #if IS_ENABLED(CONFIG_NICE_OLED_WIDGET_LAYER)
+     draw_layer_status(canvas, state);
  #endif
--        lv_canvas_draw_text(canvas, CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT_CUSTOM_X,
--                            CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT_CUSTOM_Y,
--                            hid_area_width, &label_layout, layout_str);
-+        (void)layout_str;
++    {
 +        lv_draw_img_dsc_t flag_dsc;
 +        lv_draw_img_dsc_init(&flag_dsc);
-+        lv_canvas_draw_img(canvas, CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT_CUSTOM_X,
-+                           CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT_CUSTOM_Y,
-+                           state->layout == 1 ? &flag_vn : &flag_en, &flag_dsc);
- #endif // CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT
++        lv_canvas_draw_img(canvas, 1, 104, &flag_vn, &flag_dsc);
++    }
  
-         //  Dibujar Volumen
-@@ -671,7 +679,7 @@ static void draw_hid_status(lv_obj_t *canvas, const struct status_state *state)
-                             hid_area_width, &label_volume, state->media_player);
- #endif
- 
--    } else {
-+    } else if (0) { // Sofle: draw nothing without the PC feed
-         //  Dibuja mensaje "HID not found"
- 
-         // Dibujar "HID"
+ #ifdef CONFIG_NICE_OLED_WIDGET_RAW_HID
+     draw_hid_status(canvas, state);
