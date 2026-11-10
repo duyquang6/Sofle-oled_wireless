@@ -114,13 +114,14 @@ const lv_img_dsc_t {n} = {{
 """)
     return "".join(parts)
 
-face = portrait(sys.argv[1])
-imgs, upright = frames(face)
-open(sys.argv[2], "w").write(to_c(imgs))
-if len(sys.argv) > 3:
-    sc = 5
-    sheet = Image.new("L", ((PW + 2) * sc * 8, (PH + 2) * sc * 2), 90)
-    for i, up in enumerate(upright):
-        v = up.convert("L").resize((PW * sc, PH * sc), Image.NEAREST)
-        sheet.paste(v, ((i % 8) * (PW + 2) * sc, (i // 8) * (PH + 2) * sc))
-    sheet.save(sys.argv[3])
+if __name__ == "__main__":
+    face = portrait(sys.argv[1])
+    imgs, upright = frames(face)
+    open(sys.argv[2], "w").write(to_c(imgs))
+    if len(sys.argv) > 3:
+        sc = 5
+        sheet = Image.new("L", ((PW + 2) * sc * 8, (PH + 2) * sc * 2), 90)
+        for i, up in enumerate(upright):
+            v = up.convert("L").resize((PW * sc, PH * sc), Image.NEAREST)
+            sheet.paste(v, ((i % 8) * (PW + 2) * sc, (i // 8) * (PH + 2) * sc))
+        sheet.save(sys.argv[3])
