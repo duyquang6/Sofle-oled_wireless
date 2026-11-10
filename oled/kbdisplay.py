@@ -3,7 +3,7 @@
 
 - time (hour, minute), refreshed every 30 s so the keyboard keeps the HID area on
 - EN/VI from fcitx5 (layout index into CONFIG_NICE_OLED_WIDGET_RAW_HID_LAYOUT_LIST="EN,VI")
-- one text slot (10 chars) cycling Genshin pages from genshin-redeem /api/status
+- one text slot (5 chars fit the 32 px column) cycling Genshin pages from genshin-redeem /api/status
 SIGUSR1 jumps to the next page (niri binds F13, sent by NAV + left encoder press).
 Stdlib only; writes to every Sofle hidraw node with the 0xFF60 usage page (USB and BT).
 """
@@ -63,16 +63,16 @@ def pages(s, now):
     full_at = s.get("resin_full_at", 0)
     mx = s.get("max_resin", 200)
     resin = mx if not full_at or full_at <= now else mx - math.ceil((full_at - now) / RESIN_EVERY)
-    out = [f"R {resin}"]
+    out = [f"R{resin}"]
     if s.get("expeditions"):
         done = s["expeditions"] if s.get("expeditions_back_at", 0) <= now else s.get("expeditions_done", 0)
-        out.append(f"Ex {done}/{s['expeditions']}")
+        out.append(f"Ex{done}/{s['expeditions']}")
     if s.get("commissions_total"):
-        out.append(f"Dl {s['commissions']}/{s['commissions_total']}")
+        out.append(f"Dl{s['commissions']}/{s['commissions_total']}")
     if s.get("max_realm"):
-        out.append(f"Pot {s['realm'] * 100 // s['max_realm']}%")
+        out.append(f"Po{s['realm'] * 100 // s['max_realm']}%")
     if "pity" in s:
-        out.append(f"P {s['pity']}")
+        out.append(f"Pi{s['pity']}")
     return out
 
 class State:
