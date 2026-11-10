@@ -1,4 +1,4 @@
-"""Builds the right-half OLED animation: Tsaritsa casting a Cryo burst (charge, snowflake, flash, ice shards).
+"""Builds the right-half OLED animation: static Tsaritsa portrait with primogems falling above her.
 
 Writes a drop-in replacement for zmk-nice-oled's assets/crystal.c (16 frames,
 69x68, 1-bit; only rows 18..49 are visible on the 128x32 Sofle OLED). The OLED is
@@ -20,61 +20,25 @@ def portrait(path):
     lit = gray.point(lambda v: 255 if v > 185 else 0)
     return ImageChops.multiply(alpha, lit).convert("1", dither=Image.NONE)
 
+GEM_BIG = ["...#...", "...#...", "..###..", "###.###", "..###..", "...#...", "...#..."]
+GEM_SMALL = ["..#..", ".###.", "##.##", ".###.", "..#.."]
+
 def frames(face):
-    """16-frame loop: idle snow, charge, Cryo snowflake grows, flash + ice shards, fade."""
-    import math
-    from PIL import ImageDraw, ImageChops
-    rnd = random.Random(7)
+    """16-frame loop: static portrait with primogems falling above her head."""
     py0 = PH - face.height
-    cx, cy = PW // 2, py0 // 2  # effect centre above her head
-    snow = [(rnd.randrange(1, PW - 1), rnd.randrange(64), rnd.choice((1, 2))) for _ in range(8)]
-    sparks = [rnd.random() * 2 * math.pi for _ in range(8)]
-    shards = [(i * 2 * math.pi / 10 + rnd.uniform(-0.15, 0.15), rnd.uniform(0.8, 1.2)) for _ in range(1) for i in range(10)]
-
-    def snowflake(d, r):
-        for k in range(6):
-            t = k * math.pi / 3 - math.pi / 2
-            x2, y2 = cx + r * math.cos(t), cy + r * math.sin(t)
-            d.line((cx, cy, x2, y2), fill=1)
-            if r >= 6:  # side barbs
-                bx, by = cx + r * 0.6 * math.cos(t), cy + r * 0.6 * math.sin(t)
-                for s_ in (-1, 1):
-                    tt = t + s_ * math.pi / 4
-                    d.line((bx, by, bx + 3 * math.cos(tt), by + 3 * math.sin(tt)), fill=1)
-        d.point((cx, cy), fill=1)
-
+    # (x, start y, speed, sprite): columns spread so gems never overlap
+    gems = [(1, 0, 1, GEM_BIG), (11, 40, 1, GEM_SMALL), (19, 14, 2, GEM_SMALL),
+            (25, 30, 1, GEM_BIG), (6, 52, 2, GEM_SMALL), (14, 24, 1, GEM_BIG)]
     out, upright = [], []
     for f in range(FRAMES):
         up = Image.new("1", (PW, PH), 0)
+        for x0, y0, speed, sprite in gems:
+            y = (y0 + f * 4 * speed) % 64 - 8  # 4px*speed per frame wraps exactly in 16 frames
+            for dy, row in enumerate(sprite):
+                for dx, c in enumerate(row):
+                    if c == "#" and 0 <= y + dy < py0:
+                        up.putpixel((x0 + dx, y + dy), 1)
         up.paste(face, (0, py0))
-        d = ImageDraw.Draw(up)
-        if f <= 2 or f >= 14:  # idle snow
-            for x, y0, sp in snow:
-                y = (y0 + f * 4 * sp) % 64
-                if y < py0:
-                    d.point((x, y), fill=1)
-        elif f <= 5:  # charge: sparks spiral in
-            r = 14 - (f - 3) * 5
-            for a0 in sparks:
-                a1 = a0 + (f - 3) * 0.9
-                d.point((cx + r * math.cos(a1), cy + r * math.sin(a1)), fill=1)
-            d.point((cx, cy), fill=1)
-        elif f <= 8:  # snowflake grows
-            snowflake(d, 3 + (f - 6) * 4)
-        else:  # burst: flash, then shards fly out and fade
-            k = f - 9
-            if k == 0:
-                snowflake(d, 12)
-                up = ImageChops.invert(up.convert("L")).convert("1")  # flash
-                d = ImageDraw.Draw(up)
-            else:
-                for t, sp in shards:
-                    r0 = (4 + k * 5) * sp
-                    if k >= 4 and (hash((t, k)) & 1):
-                        continue  # thin out while fading
-                    x1, y1 = cx + r0 * math.cos(t), cy + r0 * math.sin(t)
-                    x2, y2 = cx + (r0 + 4) * math.cos(t), cy + (r0 + 4) * math.sin(t)
-                    d.line((x1, y1, x2, y2), fill=1)
         upright.append(up)
         img = Image.new("1", (W, H), 0)
         img.paste(up.transpose(Image.ROTATE_270), (0, TOP))
