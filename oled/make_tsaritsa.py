@@ -1,18 +1,20 @@
 """Builds the right-half OLED animation: Tsaritsa portrait with falling snow.
 
 Writes a drop-in replacement for zmk-nice-oled's assets/crystal.c (16 frames,
-69x68, 1-bit; only rows 18..49 are visible on the 128x32 Sofle OLED).
+69x68, 1-bit; only rows 18..49 are visible on the 128x32 Sofle OLED). The OLED is
+mounted portrait, so frames are drawn upright at 32x69 and rotated 90 degrees clockwise.
 usage: python3 -I make_tsaritsa.py <Anastasya_Icon.png> <out crystal.c> [preview.png]
 """
 import random, sys
 from PIL import Image, ImageChops, ImageOps
 
 W, H, TOP, VIS, FRAMES = 69, 68, 18, 32, 16
+PW, PH = VIS, W  # upright portrait canvas
 
 def portrait(path):
-    im = Image.open(path).convert("RGBA").crop((40, 0, 216, 190))
-    w = round(im.width * VIS / im.height)
-    im = im.resize((w, VIS), Image.LANCZOS)
+    im = Image.open(path).convert("RGBA").crop((30, 0, 226, 256))
+    h = round(im.height * PW / im.width)
+    im = im.resize((PW, h), Image.LANCZOS)
     alpha = im.getchannel("A").point(lambda v: 255 if v > 128 else 0)
     gray = ImageOps.autocontrast(ImageOps.grayscale(im.convert("RGB")), cutoff=1)
     lit = gray.point(lambda v: 255 if v > 185 else 0)
@@ -20,22 +22,26 @@ def portrait(path):
 
 def frames(face):
     rnd = random.Random(7)
-    px0 = (W - face.width) // 2
-    free = [x for x in range(1, W - 2) if x < px0 - 2 or x > px0 + face.width + 1]
-    flakes = [(rnd.choice(free), rnd.randrange(VIS), rnd.choice((1, 1, 2)), rnd.random() < 0.3)
-              for _ in range(12)]
-    out = []
+    py0 = PH - face.height
+    flakes = [(rnd.randrange(1, PW - 1), rnd.randrange(64), rnd.choice((1, 1, 2)), rnd.random() < 0.3)
+              for _ in range(10)]
+    out, upright = [], []
     for f in range(FRAMES):
-        img = Image.new("1", (W, H), 0)
-        img.paste(face, (px0, TOP))
+        up = Image.new("1", (PW, PH), 0)
+        up.paste(face, (0, py0))
         for x, y0, speed, big in flakes:
-            y = TOP + (y0 + f * 2 * speed) % VIS  # 2px*speed per frame wraps exactly in 16 frames
+            y = (y0 + f * 4 * speed) % 64  # 4px*speed per frame wraps exactly in 16 frames
+            if y >= py0 + 4:
+                continue  # snow only above her head
             pts = [(x, y)] + ([(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)] if big else [])
             for p in pts:
-                if 0 <= p[0] < W and TOP <= p[1] < TOP + VIS:
-                    img.putpixel(p, 1)
+                if 0 <= p[0] < PW and 0 <= p[1] < py0:
+                    up.putpixel(p, 1)
+        upright.append(up)
+        img = Image.new("1", (W, H), 0)
+        img.paste(up.transpose(Image.ROTATE_270), (0, TOP))
         out.append(img)
-    return out
+    return out, upright
 
 def to_c(imgs):
     stride = (W + 7) // 8
@@ -71,12 +77,12 @@ const lv_img_dsc_t {n} = {{
     return "".join(parts)
 
 face = portrait(sys.argv[1])
-imgs = frames(face)
+imgs, upright = frames(face)
 open(sys.argv[2], "w").write(to_c(imgs))
 if len(sys.argv) > 3:
     sc = 5
-    sheet = Image.new("L", ((W + 2) * sc * 4, (VIS + 2) * sc * 4), 90)
-    for i, img in enumerate(imgs):
-        v = img.crop((0, TOP, W, TOP + VIS)).convert("L").resize((W * sc, VIS * sc), Image.NEAREST)
-        sheet.paste(v, ((i % 4) * (W + 2) * sc, (i // 4) * (VIS + 2) * sc))
+    sheet = Image.new("L", ((PW + 2) * sc * 8, (PH + 2) * sc * 2), 90)
+    for i, up in enumerate(upright):
+        v = up.convert("L").resize((PW * sc, PH * sc), Image.NEAREST)
+        sheet.paste(v, ((i % 8) * (PW + 2) * sc, (i // 8) * (PH + 2) * sc))
     sheet.save(sys.argv[3])
