@@ -12,7 +12,6 @@
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/outputs.h>
-#include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
 #define BASE 0
@@ -22,16 +21,6 @@
 
 / {
     behaviors {
-        // Right encoder as a mouse wheel, three wheel notches per detent.
-        // &msc reports speed * 16ms / 1000 per tick (SCRL_* = 10 rounds to 0);
-        // holding for 20ms fires exactly one tick, so 200 -> 3 notches.
-        scroll_enc: scroll_enc {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc MOVE_Y(-200)>, <&msc MOVE_Y(200)>;
-            tap-ms = <20>;
-        };
-
         // Caps position: tap = Esc (helix normal mode), hold = Ctrl.
         // hold-preferred: any key pressed while held makes it Ctrl at once, so
         // fast rolled Ctrl+C / Ctrl+V work even if Caps is released first.
@@ -94,8 +83,9 @@
                                &kp LCTRL &kp LALT  &nav_lock NAV NAV  &kp LGUI  &kp SPACE     &ent_sym SYM ENTER  &kp BSPC   &kp DEL    &kp LC(SPACE)  &kp PSCRN
             >;
 
-            // Left: volume. Right: mouse wheel (Super+wheel = niri workspace).
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &scroll_enc>;
+            // Left: volume. Right: seek the playing media +/-5s (niri runs playerctl on
+            // XF86AudioForward/Rewind, so it works without focusing the player).
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_FF C_RW>;
         };
 
         nav_layer {
@@ -115,8 +105,8 @@
                      &trans     &trans     &trans     &trans     &trans    &trans    &trans      &trans     &trans      &trans
             >;
 
-            // Left: screen brightness. Right: niri focus column left/right.
-            sensor-bindings = <&inc_dec_kp C_BRI_UP C_BRI_DN &inc_dec_kp LG(RIGHT) LG(LEFT)>;
+            // Left: screen brightness. Right: niri consume-or-expel window right/left (Super+] / Super+[).
+            sensor-bindings = <&inc_dec_kp C_BRI_UP C_BRI_DN &inc_dec_kp LG(RBKT) LG(LBKT)>;
         };
 
         sym_layer {
@@ -135,7 +125,8 @@
                       &trans     &trans     &trans     &trans     &trans    &trans   &trans     &trans     &trans     &trans
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &scroll_enc>;
+            // Left: volume. Right: next/previous track.
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_NEXT C_PREV>;
         };
 
         adjust_layer {
